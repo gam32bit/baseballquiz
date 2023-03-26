@@ -1,17 +1,24 @@
 import requests
 from bs4 import BeautifulSoup
+import json
 
 url = "https://rotogrinders.com/lineups/mlb"
 response = requests.get(url)
 
-soup = BeautifulSoup(response.content, 'html.parser')
+soup = BeautifulSoup(response.text, 'html.parser')
+players = []
 
-player_names = []
+for ul in soup.find_all('ul', {'class': 'players unconfirmed'}):
+    for li in ul.find_all('li', {'class': 'player'}):
+        name = li.find('a', {'class': 'player-popup'}).get('title')
+        players.append(name)
 
-for player_list in soup.find_all("ul", class_="players unconfirmed"):
-    for player in player_list.find_all("li"):
-        player_name_element = player.find("a", class_="player-popup")
-        if player_name_element is not None:
-            player_names.append(player_name_element.get("title"))
+# create a dictionary containing the player names
+data = {'players': players}
 
-print(player_names)
+# convert the dictionary to a JSON object
+json_data = json.dumps(data)
+
+# save the JSON object to a file
+with open('players.json', 'w') as f:
+    f.write(json_data)
