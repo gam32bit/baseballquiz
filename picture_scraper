@@ -1,0 +1,63 @@
+import requests
+from bs4 import BeautifulSoup
+import urllib
+import json
+import psycopg2
+
+# Load the JSON file
+with open('players.json', 'r') as f:
+    players = json.load(f)['players']
+
+# Connect to the Postgres database
+conn = psycopg2.connect(
+    host="yourhost",
+    database="yourdatabase",
+    user="yourusername",
+    password="yourpassword"
+)
+
+# Open a cursor to perform database operations
+cur = conn.cursor()
+
+# Loop through each player
+for i, player in enumerate(players):
+    
+    # Replace spaces with underscores
+    player_name = player.replace(' ', '_')
+
+    # Create the Wikipedia page URL
+    url = 'https://en.wikipedia.org/wiki/' + player
+    
+    # Send a request to the Wikipedia page URL
+    response = requests.get(url)
+    
+    # Parse the HTML response
+    soup = BeautifulSoup(response.content, 'html.parser')
+    
+    # Find the image element
+    image = soup.find(class_='infobox-image') or soup.find(class_='thumb')
+    
+    # Extract the image URL and download the image
+    if image:
+        image_url = image.find('img')['src']
+        
+        # Check if the image URL starts with '//'
+        if image_url.startswith('//'):
+            image_url = 'https:' + image_url
+        
+        urllib.request.urlretrieve(image_url, f"{player}.jpg")
+        
+        # Read the image file as bytes
+        with open(f"{player}.jpg", "rb") as image_file:
+            image_data = image_file.read()
+        
+        # Insert player data into the 'player' table
+        cur.execute(
+            "INSERT INTO BaseballPlayer (name, picture) VALUES (%s, %s)",
+            (player, psycopg2.Binary(image_data))
+        )
+        
+# Commit the changes to the database and close the cursor and connection
+conn.commit()
+cur.close()
+conn.close()
