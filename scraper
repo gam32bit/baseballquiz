@@ -1,0 +1,98 @@
+import os
+import requests
+from bs4 import BeautifulSoup
+import urllib
+import psycopg2
+from django.utils.text import slugify
+
+# Connect to the Postgres database
+conn = psycopg2.connect(
+    host="yourhost",
+    database="yourdatabase",
+    user="yourusername",
+    password="yourpassword"
+)
+
+# Open a cursor to perform database operations
+cur = conn.cursor()
+
+url = "https://rotogrinders.com/lineups/mlb"
+response = requests.get(url)
+
+soup = BeautifulSoup(response.text, 'html.parser')
+players = []
+
+# Find all players, regardless of type
+for ul in soup.find_all('ul', {'class': ['players unconfirmed', 'pitchers', 'players probable']}):
+
+    # Find all player elements within the ul
+    for li in ul.find_all('li', {'class': ['player', 'pitcher']}):
+        # Check if this is a pitcher or not
+        is_pitcher = 'pitcher' in li.get('class', [])
+
+        # If it is a pitcher, get the name from the anchor tag
+        if is_pitcher:
+            name = li.find('a', {'class': 'player-popup'}).text.strip()
+
+        # Otherwise, get the name from the span tag
+        else:
+            name = li.find('span', {'class': 'pname'}).text.strip()
+
+        # Append the name to the players list
+        players.append(name)
+
+# Loop through each player
+for i, player in enumerate(players):
+    
+    # Replace spaces with underscores
+    player_name = player.replace(' ', '_')
+
+    # Create the Wikipedia page URL
+    url = 'https://en.wikipedia.org/wiki/' + player
+    
+    # Send a request to the Wikipedia page URL
+    response = requests.get(url)
+    
+    # Parse the HTML response
+    soup = BeautifulSoup(response.content, 'html.parser')
+    
+    # Find the image element
+    image = soup.find(class_='infobox-image') or soup.find(class_='thumb')
+    
+    # Extract the image URL and download the image
+    if image:
+        image_url = image.find('img')['src']
+        
+        # Check if the image URL starts with '//'
+        if image_url.startswith('//'):
+            image_url = 'https:' + image_url
+        
+        # Generate a safe file name using slugify
+        safe_file_name = slugify(player_name) + '.jpg'
+        
+        # Check if the image file already exists
+        if not os.path.exists(os.path.join('static', 'images', safe_file_name)):
+            # Download the image file
+            urllib.request.urlretrieve(image_url, os.path.join('static', 'images', safe_file_name))
+        
+        # Check if the player already exists in the database
+        cur.execute(
+            "SELECT COUNT(*) FROM BaseballPlayer WHERE name = %s",
+            (player,)
+        )
+        count = cur.fetchone()[0]
+        
+        # If the player doesn't exist, insert player data into the 'player' table
+        if count == 0:
+            cur.execute(
+                "INSERT INTO BaseballPlayer (name, picture_file_name) VALUES (%s, %s)",
+                (player, safe_file_name)
+            )
+            print(f"Added player: {player}")
+        else:
+            print(f"Skipped player: {player} (already exists)")
+        
+# Commit the changes to the database and close the cursor and connection
+conn.commit()
+cur.close()
+conn.close()
