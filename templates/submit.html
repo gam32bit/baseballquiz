@@ -2,13 +2,14 @@
 <html>
   <head>
     <title>Baseball Player Quiz - Submit</title>
+    <link rel="stylesheet" href="build/submit.css">
   </head>
   <body>
     <div>
       <h1>Baseball Player Quiz</h1>
       <p><img src="{{ player.picture_url }}" alt="{{ player.name }}"></p>
       <p>{{ message }}</p>
-      <p>Score: {{ score }}/20</p>
+      <p id ="counter">Score: {{ score }}/20</p>
       {% if score < 20 %}
         <p>Click below for the next player:</p>
         <form method="get" action="/">
