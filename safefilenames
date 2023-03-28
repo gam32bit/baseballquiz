@@ -4,26 +4,29 @@ import psycopg2
 from django.utils.text import slugify
 
 # establish a connection to your database
-conn = psycopg2.connect(database="db", user="u", password="p", host="h", port="5432")
+conn = psycopg2.connect(database="d", user="u", password="p", host="h", port="5432")
 cur = conn.cursor()
 
+path = "static/images"
+
 # loop through each file in the folder
-for filename in os.listdir('path'):
-    # use the regular expression pattern to extract the player's name
-    player_name = filename
-    
+for filename in os.listdir(path):
+    # remove jpg ending
+    player_name = filename.rsplit(".", 1)[0]
     # generate a safe file name using slugify
     safe_file_name = slugify(player_name) + '.jpg'
-
     # query the "baseballplayer" table for the player's name
     cur.execute("SELECT * FROM baseballplayer WHERE name = %s", (player_name,))
     row = cur.fetchone()
 
     # if a row is returned, update the "picture_file_name" column
     if row:
+        print(row)
         cur.execute("UPDATE baseballplayer SET picture_file_name = %s WHERE name = %s", (safe_file_name, player_name))
-
+    # rename the file
+        os.rename(os.path.join(path, filename), os.path.join(path, safe_file_name))
 # commit changes and close the database connection
 conn.commit()
 cur.close()
 conn.close()
+
