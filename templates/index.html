@@ -7,7 +7,7 @@
     <div>
       <h1>Baseball Player Quiz</h1>
       <p>Enter the name of the player in the input box below:</p>
-      <p><img src="{{ url_for('static', filename='images/' + player.name) }}" alt="{{ player.name }}">
+      <p><img src="{{ url_for('static', filename='images/' + player.picture_file_name) }}" alt="{{ player.name }}">
       </p>
       <form method="post" action="/submit">
         <label for="name">Player Name:</label>
