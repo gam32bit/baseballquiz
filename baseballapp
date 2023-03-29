@@ -24,6 +24,11 @@ def index():
     else:
         score = 0
         session['score'] = score
+
+    if not session:
+        session['score'] = 0
+        session['guesses'] = 0
+
     return render_template('index.html', player=random_player, score=session['score'])
 
 @app.route('/submit', methods=['POST'])
@@ -31,7 +36,7 @@ def submit():
     player_id = session['current_player_id']
     player = BaseballPlayer.query.filter_by(id=player_id).first()
     guessed_name = request.form['name']
-    # Calculate the Levenshtein distance between the guessed name and the actual name
+   # Calculate the Levenshtein distance between the guessed name and the actual name
     distance_score = distance(guessed_name.lower(), player.name.lower())
     # If the distance is less than or equal to 2 (i.e., the guessed name is mostly right), consider it correct
     if distance_score <= 2:
@@ -39,7 +44,33 @@ def submit():
         message = 'Correct!'
     else:
         message = 'Incorrect!'
-    return render_template('submit.html', message=message, player=player, score=session['score'])
+    # Increment the guess counter
+    session['guesses'] += 1
+    # Check if the user has made 20 guesses
+    if session['guesses'] >= 20:
+        # Calculate the percentage of correct answers
+        percentage = session['score'] / 20 * 100
+        # Set the message and pass/fail status based on the percentage
+        if percentage >= 65:
+            pass_fail = 'Congratulations, you passed!'
+        else:
+            pass_fail = 'Try again?'
+        # Reset the score and guess counter
+        session['score'] = 0
+        session['guesses'] = 0
+        # Render the final page
+        return render_template('final.html', percentage=percentage, pass_fail=pass_fail)
+    # If the user hasn't made 20 guesses yet, render the submit page
+    else:
+        return render_template('submit.html', message=message, player=player, score=session['score'])
+
+@app.route('/restart')
+def restart():
+    # Reset the score and guess counter
+    session['score'] = 0
+    session['guesses'] = 0
+    # Redirect the user to the index page as if they were starting a new session
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.secret_key = 'secret key'
