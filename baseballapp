@@ -15,6 +15,11 @@ class BaseballPlayer(db.Model):
 
 @app.route('/')
 def index():
+    if request.method == 'POST' and 'restart' in request.form:
+        session['score'] = 0
+        session['total_guesses'] = 0
+        return redirect(url_for('index'))
+    
     players = BaseballPlayer.query.all()
     random_player = random.choice(players)
     session['current_player_id'] = random_player.id

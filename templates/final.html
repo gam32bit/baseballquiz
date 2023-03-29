@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Final Score</title>
+  </head>
+  <body>
+    <h1>Final Score</h1>
+    <p>You got {{ score }} out of {{ total_guesses }} correct, which is {{ percentage }}%.</p>
+    {% if percentage >= 65 %}
+      <p>Congratulations, you passed!</p>
+    {% else %}
+      <p>Try again?</p>
+    {% endif %}
+    <form action="/" method="post">
+      <input type="hidden" name="restart" value="true">
+      <button type="submit">Restart</button>
+    </form>
+  </body>
+</html>
