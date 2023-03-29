@@ -26,8 +26,7 @@ def index():
         session["score"] = 0
         session["total_guesses"] = 0
         return redirect(url_for("index"))
-
-    # players = BaseballPlayer.query.all()
+    
     random_player = players[random.choice(players_keys)]
     session["current_player_id"] = random_player.id
     # Check if 'score' is already present in the session
