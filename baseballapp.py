@@ -1,17 +1,10 @@
 from flask import Flask, render_template, request, session, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
 import random
 from Levenshtein import distance
 import json
 
 app = Flask(__name__)
 
-
-class Player(object):
-    def __init__(self, id, name, picture_file_name):
-        self.name = name
-        self.picture_file_name = picture_file_name
-        self.id = id
 
 # Read in player info from json file
 with open("players.json", "r") as f:
@@ -23,7 +16,7 @@ players_keys = list(players.keys())
 def index():
     if request.method == "POST" and "restart" in request.form:
         session["score"] = 0
-        session["total_guesses"] = 0
+        session["guesses"] = 0
         return redirect(url_for("index"))
     
     random_player_id = random.choice(players_keys)
@@ -35,6 +28,7 @@ def index():
     else:
         score = 0
         session["score"] = score
+        session["guesses"] = 0
 
     if not session:
         session["score"] = 0
