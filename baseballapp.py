@@ -2,10 +2,37 @@ from flask import Flask, render_template, request, session, redirect, url_for
 import random
 from Levenshtein import distance
 import json
+import jsonschema
 
 app = Flask(__name__)
 
+# Define the JSON schema for the players data
+players_schema = {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "patternProperties": {
+        "^[0-9]+$": {
+            "type": "object",
+            "properties": {
+                "name": {"type": "string"},
+                "picture_file_name": {"type": "string"}
+            },
+            "required": ["name", "picture_file_name"]
+        }
+    }
+}
 
+# Load the players data from the file
+with open("players.json", "r") as f:
+    players_data = json.load(f)
+
+# Validate the players data against the schema
+try:
+    jsonschema.validate(players_data, players_schema)
+    print("Players data is valid!")
+except jsonschema.ValidationError as e:
+    print("Players data is invalid:")
+    print(e)
 # Read in player info from json file
 with open("players.json", "r") as f:
     players = json.load(f)
