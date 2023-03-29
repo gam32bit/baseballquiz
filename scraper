@@ -2,11 +2,13 @@ import os
 import requests
 from bs4 import BeautifulSoup
 import urllib
-from django.utils.text import slugify
 import json
+import unicodedata
+from django.utils.text import slugify
 
-# Define an empty list to store player data
-player_data = []
+# Define an empty dictionary to store player data
+player_data = {}
+serial_num = 1
 
 url = "https://www.mlb.com/news/projected-lineups-rotations-for-every-mlb-team-2023"
 response = requests.get(url)
@@ -53,8 +55,9 @@ for ol in soup.find_all('ol'):
                 # Download the image file
                 urllib.request.urlretrieve(image_url, os.path.join('static', 'images', safe_file_name))
 
-            # Append the player data to the list
-            player_data.append({'name': name, 'image_file_name': safe_file_name})
+            # Insert the player data to the dictionary and increment id
+            player_data[serial_num] = {"name": name, "picture_file_name": safe_file_name}
+            serial_num += 1
 
 # Write the player data to the players.json file
 with open('players.json', 'w') as f:
