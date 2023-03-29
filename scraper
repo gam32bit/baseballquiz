@@ -7,36 +7,30 @@ from django.utils.text import slugify
 
 # Connect to the Postgres database
 conn = psycopg2.connect(
-    host="yourhost",
-    database="yourdatabase",
-    user="yourusername",
-    password="yourpassword"
+    host="h",
+    database="d",
+    user="u",
+    password="p"
 )
 
 # Open a cursor to perform database operations
 cur = conn.cursor()
 
-url = "https://rotogrinders.com/lineups/mlb"
+url = "https://www.mlb.com/news/projected-lineups-rotations-for-every-mlb-team-2023"
 response = requests.get(url)
 
 soup = BeautifulSoup(response.text, 'html.parser')
+
 players = []
 
-# Find all players, regardless of type
-for ul in soup.find_all('ul', {'class': ['players unconfirmed', 'pitchers', 'players probable']}):
+# Find all ordered lists in the article
+for ol in soup.find_all('ol'):
 
-    # Find all player elements within the ul
-    for li in ul.find_all('li', {'class': ['player', 'pitcher']}):
-        # Check if this is a pitcher or not
-        is_pitcher = 'pitcher' in li.get('class', [])
+    # Find all player name elements within the ol
+    for a in ol.find_all('a', {'target': '_blank', 'rel': 'tag'}):
 
-        # If it is a pitcher, get the name from the anchor tag
-        if is_pitcher:
-            name = li.find('a', {'class': 'player-popup'}).text.strip()
-
-        # Otherwise, get the name from the span tag
-        else:
-            name = li.find('span', {'class': 'pname'}).text.strip()
+        # Get the player name
+        name = a.text.strip()
 
         # Append the name to the players list
         players.append(name)
@@ -48,7 +42,7 @@ for i, player in enumerate(players):
     player_name = player.replace(' ', '_')
 
     # Create the Wikipedia page URL
-    url = 'https://en.wikipedia.org/wiki/' + player
+    url = 'https://en.wikipedia.org/wiki/' + player_name
     
     # Send a request to the Wikipedia page URL
     response = requests.get(url)
