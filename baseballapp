@@ -4,7 +4,7 @@ import random
 from Levenshtein import distance
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'dburi'
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
 db = SQLAlchemy(app)
 
 class BaseballPlayer(db.Model):
@@ -78,5 +78,5 @@ def restart():
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    app.secret_key = 'secret key'
+    app.secret_key = SECRET_KEY
     app.run(debug=True)
