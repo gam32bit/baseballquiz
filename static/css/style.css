@@ -11,19 +11,25 @@ div {
 }
 
 h1 {
-  font-size: 4rem;
-  margin-top: 4rem;
+  font-size: 3rem;
+  margin-top: 3rem;
+}
+
+p {
+  font-size: 2rem;
 }
 
 label {
   font-weight: bold;
+  font-size: 2rem;
 }
 
 img {
-  max-width: 100%;
+  max-width: auto;
   height: auto;
   max-height: 500px;
 }
+
 
 button {
   background-color: #1138ad;
@@ -32,7 +38,7 @@ button {
   padding: 12px 20px;
   font-size: 3rem;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 10px;
 }
 
 button:hover {
