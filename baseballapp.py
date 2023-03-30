@@ -33,9 +33,6 @@ try:
 except jsonschema.ValidationError as e:
     print("Players data is invalid:")
     print(e)
-# Read in player info from json file
-with open("players.json", "r") as f:
-    players = json.load(f)
 
 players_keys = list(players.keys())
 
@@ -71,14 +68,13 @@ def index():
         score=session["score"],
     )
 
-
 @app.route("/submit", methods=["POST"])
 def submit():
     player_id = session["current_player_id"]
     player = players[player_id]
-    guessed_name = request.form["name"]
-    distance_score = distance(guessed_name.lower(), player["name"].lower())
-    if distance_score <= 2:
+    guessed_name = request.form["name"].strip().lower()
+    last_name = player["name"].split()[-1].lower()
+    if guessed_name == last_name:
         session["score"] += 1
         message = "Correct!"
     else:
@@ -106,13 +102,6 @@ def submit():
             score=session["score"],
         )
 
-@app.route("/restart")
-def restart():
-    # Reset the score and guess counter
-    session["score"] = 0
-    session["guesses"] = 0
-    # Redirect the user to the index page as if they were starting a new session
-    return redirect(url_for("index"))
 
 
 if __name__ == "__main__":
