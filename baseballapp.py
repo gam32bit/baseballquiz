@@ -73,7 +73,10 @@ def submit():
     player_id = session.get("current_player_id")
     player = players_data[player_id]
     guessed_name = request.form["name"].strip().lower()
-    last_name = player["name"].split()[-1].lower()
+    if player["name"].split()[-1].lower() == "jr":
+        last_name = player["name"].split()[-2].lower()
+    else:
+        last_name = player["name"].split()[-1].lower()
     distance_score = distance(guessed_name.lower(), last_name)
     if distance_score <= 2:
         session["score"] += 1
