@@ -40,7 +40,7 @@ players_keys = list(players_data.keys())
 
 @app.route("/")
 def index():
-    if request.method == "POST" and "restart" in request.form:
+    if "restart" in request.form:
         session["score"] = 0
         session["guesses"] = 0
         return redirect(url_for("index"))
@@ -79,8 +79,11 @@ def submit():
     if distance_score <= 2:
         session["score"] += 1
         message = "Correct!"
+        # Remove the guessed player from the players dictionary
+        players_data.pop(player_id)
     else:
         message = "Incorrect!"
+        players_data.pop(player_id)
     session["guesses"] = session.get("guesses", 0)
     session["guesses"] += 1
     if session["guesses"] >= 20:
@@ -102,14 +105,6 @@ def submit():
             },
             score=session["score"],
         )
-    
-@app.route("/restart")
-def restart():
-    # Reset the score and guess counter
-    session["score"] = 0
-    session["guesses"] = 0
-    # Redirect the user to the index page as if they were starting a new session
-    return redirect(url_for("index"))
 
 @app.route('/static/<path:path>')
 def serve_static(path):

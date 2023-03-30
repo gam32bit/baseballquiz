@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Final Score</title>
+    <title>2023 MLB Score</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   </head>
   <body>
@@ -13,9 +13,9 @@
     {% else %}
       <p>Try again?</p>
     {% endif %}
-    <form action="/" method="post">
-      <input type="hidden" name="restart" value="true">
-      <button type="submit">Restart</button>
-    </form>
+    <form action="/" method="get">
+        <input type="hidden" name="restart" value="true">
+        <button type="submit">Restart</button>
+      </form>      
   </body>
 </html>
