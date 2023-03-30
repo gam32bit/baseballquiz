@@ -3,11 +3,11 @@
   <head>
     <meta charset="utf-8">
     <title>Final Score</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   </head>
   <body>
     <h1>Final Score</h1>
-    <p>You got {{ score }} out of {{ total_guesses }} correct, which is {{ percentage }}%.</p>
+    <p>You got {{ score }} out of {{ guesses }} correct, which is {{ percentage }}%.</p>
     {% if percentage >= 65 %}
       <p>Congratulations, you passed!</p>
     {% else %}
