@@ -73,7 +73,7 @@ def index():
 
 @app.route("/submit", methods=["POST"])
 def submit():
-    player_id = session["current_player_id"]
+    player_id = session.get("current_player_id")
     player = players_data[player_id]
     guessed_name = request.form["name"].strip().lower()
     last_name = player["name"].split()[-1].lower()
@@ -84,21 +84,21 @@ def submit():
         # Remove the guessed player from the players dictionary
         session["player_ids"].remove(player_id)
         session["guesses"] += 1
-        guesses = 20 - session["guesses"]
+        guesses = 20 - session.get("guesses")
     else:
         message = "Incorrect!"
         session["player_ids"].remove(player_id)
         session["guesses"] += 1
-        guesses = 20 - session["guesses"]
+        guesses = 20 - session.get("guesses")
     if session["guesses"] >= 20:
-        percentage = session["score"] / 20 * 100
+        percentage = session.get("score") / 20 * 100
         if percentage >= 65:
             pass_fail = "Congratulations, you passed!"
         else:
             pass_fail = "Try again?"
         return render_template(
             "final.html", 
-            score=session["score"],
+            score=session.get("score"),
             percentage=percentage, 
             pass_fail=pass_fail)
     else:
@@ -109,7 +109,7 @@ def submit():
                 "name": player["name"],
                 "picture_file_name": player["picture_file_name"]
             },
-            score=session["score"],
+            score=session.get("score"),
             guesses=guesses
         )
 
