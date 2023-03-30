@@ -42,10 +42,7 @@ players_keys = list(players_data.keys())
 @app.route("/")
 def index():
     if "restart" in request.form:
-        session["score"] = 0
-        session["guesses"] = 0
-        session["player_ids"] = list(players_data.keys())
-        return redirect(url_for("index"))   
+        session.clear() 
     # Initialize session variables if they don't exist yet
     if "player_ids" not in session:
         session["player_ids"] = list(players_data.keys())

@@ -7,7 +7,7 @@
   <body>
     <div>
       <h1>2023 MLB Opening Day Players Quiz</h1>
-      <p><img src="{{ player.picture_file_name }}" alt="{{ player.name }}"></p>
+      <p>{{ player.name }}</p>
       <p>{{ message }}</p>
       <p id ="counter">Score: {{ score }}/20</p>
       {% if guesses < 20 %}
