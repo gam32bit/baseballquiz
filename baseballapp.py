@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, send_from_directory
 import random
 from Levenshtein import distance
 import json
@@ -34,7 +34,7 @@ except jsonschema.ValidationError as e:
     print("Players data is invalid:")
     print(e)
 
-players_keys = list(players.keys())
+players_keys = list(players_data.keys())
 
 @app.route("/")
 def index():
@@ -44,7 +44,7 @@ def index():
         return redirect(url_for("index"))
     
     random_player_id = random.choice(players_keys)
-    random_player = players[random_player_id]
+    random_player = players_data[random_player_id]
     session["current_player_id"] = random_player_id
 
     if "score" in session:
@@ -62,8 +62,7 @@ def index():
         "index.html",
         player={
             "name": random_player["name"],
-            "id": random_player_id,
-            "picture_file_name": random_player["picture_file_name"],
+            "picture_file_name": random_player["picture_file_name"]
         },
         score=session["score"],
     )
@@ -71,10 +70,11 @@ def index():
 @app.route("/submit", methods=["POST"])
 def submit():
     player_id = session["current_player_id"]
-    player = players[player_id]
+    player = players_data[player_id]
     guessed_name = request.form["name"].strip().lower()
     last_name = player["name"].split()[-1].lower()
-    if guessed_name == last_name:
+    distance_score = distance(guessed_name.lower(), last_name)
+    if distance_score <= 2:
         session["score"] += 1
         message = "Correct!"
     else:
@@ -96,13 +96,22 @@ def submit():
             message=message,
             player={
                 "name": player["name"],
-                "id": player_id,
-                "picture_file_name": player["picture_file_name"],
+                "picture_file_name": player["picture_file_name"]
             },
             score=session["score"],
         )
+    
+@app.route("/restart")
+def restart():
+    # Reset the score and guess counter
+    session["score"] = 0
+    session["guesses"] = 0
+    # Redirect the user to the index page as if they were starting a new session
+    return redirect(url_for("index"))
 
-
+@app.route('/static/<path:path>')
+def serve_static(path):
+    return send_from_directory('static', path)
 
 if __name__ == "__main__":
     app.run(debug=True)
