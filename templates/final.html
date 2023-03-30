@@ -5,13 +5,15 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   </head>
   <body>
-    <h1>Final Score</h1>
-    <p>You got {{ score }} out of 20 correct, which is {{ percentage }}%.</p>
-    {% if percentage >= 65 %}
+    <div>
+      <h1>Final Score</h1>
+      <p>You got {{ score }} out of 20 correct, which is {{ percentage }}%.</p>
+      {% if percentage >= 65 %}
       <p>Congratulations, you passed!</p>
-    {% else %}
+      {% else %}
       <p>Try again?</p>
-    {% endif %}
-    <button><a href="{{ url_for('reset_session') }}">Reset</a></button>     
+      {% endif %}
+      <button><a href="{{ url_for('reset_session') }}">Reset</a></button>
+    </div>     
   </body>
 </html>
