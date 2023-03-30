@@ -110,6 +110,11 @@ def submit():
             guesses=guesses
         )
 
+@app.route("/reset_session")
+def reset_session():
+    session.clear()
+    return redirect(url_for("index"))
+
 @app.route('/static/<path:path>')
 def serve_static(path):
     return send_from_directory('static', path)

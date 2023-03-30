@@ -13,9 +13,6 @@
     {% else %}
       <p>Try again?</p>
     {% endif %}
-    <form action="/" method="get">
-        <input type="hidden" name="restart" value="true">
-        <button type="submit">Restart</button>
-      </form>      
+    <button><a href="{{ url_for('reset_session') }}">Reset</a></button>     
   </body>
 </html>
