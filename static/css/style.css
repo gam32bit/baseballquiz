@@ -43,21 +43,3 @@ button:active {
   transform: scale(0.95);
 }
 
-/* Media queries for smaller devices */
-@media screen and (max-width: 768px) {
-  
-  
-  h1 {
-  font-size: 3rem;
-  margin-top: 3rem;
-  }
-  
-  label {
-  font-size: 1.8rem;
-  }
-  
-  button {
-  font-size: 2rem;
-  padding: 16px 32px;
-  }
-  }
