@@ -6,17 +6,22 @@
   </head>
   <body>
     <div>
-      <h1>Baseball Player Quiz</h1>
-      <p><img src="{{ player.picture_url }}" alt="{{ player.name }}"></p>
+      <h1>2023 MLB Opening Day Players Quiz</h1>
+      <p><img src="{{ player.picture_file_name }}" alt="{{ player.name }}"></p>
       <p>{{ message }}</p>
       <p id ="counter">Score: {{ score }}/20</p>
-      {% if score < 20 %}
+      {% if guesses < 20 %}
+      <p>You have {{ guesses }} guesses left.</p>
         <p>Click below for the next player:</p>
         <form method="get" action="/">
           <button type="submit">Next Player</button>
         </form>
-      {% else %}
-        <p>Congratulations! You've completed the quiz.</p>
+      {% elif guesses == 1 %}
+      <p>You have {{ guesses }} guess left.</p>
+        <p>Click below for the next player:</p>
+        <form method="get" action="/">
+          <button type="submit">Next Player</button>
+        </form>
       {% endif %}
     </div>
   </body>

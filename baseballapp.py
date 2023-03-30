@@ -46,6 +46,10 @@ def index():
         return redirect(url_for("index"))
     
     random_player_id = random.choice(players_keys)
+    if random_player_id not in players_data:
+        # If the current player was already removed from the dictionary, choose a new random player
+        random_player_id = random.choice(players_keys)
+        session["current_player_id"] = random_player_id
     random_player = players_data[random_player_id]
     session["current_player_id"] = random_player_id
 
@@ -81,20 +85,24 @@ def submit():
         message = "Correct!"
         # Remove the guessed player from the players dictionary
         players_data.pop(player_id)
+        session["guesses"] += 1
+        guesses = 20 - session["guesses"]
     else:
         message = "Incorrect!"
         players_data.pop(player_id)
-    session["guesses"] = session.get("guesses", 0)
-    session["guesses"] += 1
+        session["guesses"] += 1
+        guesses = 20 - session["guesses"]
     if session["guesses"] >= 20:
         percentage = session["score"] / 20 * 100
         if percentage >= 65:
             pass_fail = "Congratulations, you passed!"
         else:
             pass_fail = "Try again?"
-        session["score"] = 0
-        session["guesses"] = 0
-        return render_template("final.html", percentage=percentage, pass_fail=pass_fail)
+        return render_template(
+            "final.html", 
+            score=session["score"],
+            percentage=percentage, 
+            pass_fail=pass_fail)
     else:
         return render_template(
             "submit.html",
@@ -104,6 +112,7 @@ def submit():
                 "picture_file_name": player["picture_file_name"]
             },
             score=session["score"],
+            guesses=guesses
         )
 
 @app.route('/static/<path:path>')

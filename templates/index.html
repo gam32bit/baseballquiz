@@ -8,8 +8,7 @@
     <div>
       <h1>2023 MLB Opening Day Players Quiz</h1>
       <p>Enter the LAST name of the player in the input box below:</p>
-      <p><img src="{{ url_for('static', filename='images/' + player.picture_file_name) }}" alt="{{ player.name }}">
-      </p>
+      <p><img src="{{ url_for('static', filename='images/' + player.picture_file_name) }}" alt="{{ player.name }}"></p>
       <form method="post" action="/submit">
         <label for="name">Player Last Name:</label>
         <input type="text" id="name" name="name" required>
@@ -17,8 +16,7 @@
         <br>
         <button type="submit">Submit</button>
       </form>
-      <p>{{ message }}</p>
-      <p id="counter">Score: {{ score }}/20</p>
     </div>
   </body>
 </html>
+
