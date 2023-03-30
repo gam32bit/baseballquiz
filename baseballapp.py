@@ -45,11 +45,7 @@ def index():
         session["guesses"] = 0
         return redirect(url_for("index"))
     
-    if "current_player_id" not in session:
-        random_player_id = random.choice(players_keys)
-        session["current_player_id"] = random_player_id
-    else:
-        random_player_id = session["current_player_id"]
+    random_player_id = random.choice(players_keys)
     if random_player_id not in players_data:
         # If the current player was already removed from the dictionary, choose a new random player
         random_player_id = random.choice(players_keys)
@@ -75,13 +71,13 @@ def index():
             "picture_file_name": random_player["picture_file_name"]
         },
         score=session["score"],
-
     )
 
 @app.route("/submit", methods=["POST"])
 def submit():
-    if 'current_player_id' not in session:
-        return redirect(url_for('index'))
+    if "current_player_id" not in session:
+        # Handle the case when current_player_id is not present in the session
+        return redirect(url_for("index"))
     player_id = session["current_player_id"]
     player = players_data[player_id]
     guessed_name = request.form["name"].strip().lower()
