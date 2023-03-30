@@ -46,20 +46,20 @@ button:active {
 /* Media queries for smaller devices */
 @media screen and (max-width: 768px) {
   div {
-    width: 90%;
+  width: 180%;
   }
-
+  
   h1 {
-    font-size: 1.5rem;
-    margin-top: 1.5rem;
+  font-size: 3rem;
+  margin-top: 3rem;
   }
-
+  
   label {
-    font-size: 0.9rem;
+  font-size: 1.8rem;
   }
-
+  
   button {
-    font-size: 0.9rem;
-    padding: 8px 16px;
+  font-size: 2rem;
+  padding: 16px 32px;
   }
-}
+  }
