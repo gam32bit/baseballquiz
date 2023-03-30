@@ -3,7 +3,6 @@ import requests
 from bs4 import BeautifulSoup
 import urllib
 import json
-import unicodedata
 from django.utils.text import slugify
 
 # Define an empty dictionary to store player data
