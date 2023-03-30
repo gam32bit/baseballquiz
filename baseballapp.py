@@ -4,6 +4,7 @@ from Levenshtein import distance
 import json
 import jsonschema
 import secrets
+import os
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
@@ -43,27 +44,24 @@ def index():
     if "restart" in request.form:
         session["score"] = 0
         session["guesses"] = 0
-        return redirect(url_for("index"))
-    
-    random_player_id = random.choice(players_keys)
-    if random_player_id not in players_data:
-        # If the current player was already removed from the dictionary, choose a new random player
-        random_player_id = random.choice(players_keys)
-        session["current_player_id"] = random_player_id
-    random_player = players_data[random_player_id]
-    session["current_player_id"] = random_player_id
-
-    if "score" in session:
-        score = session["score"]
-    else:
-        score = 0
-        session["score"] = score
-        session["guesses"] = 0
-
-    if not session:
+        session["player_ids"] = list(players_data.keys())
+        return redirect(url_for("index"))   
+    # Initialize session variables if they don't exist yet
+    if "player_ids" not in session:
+        session["player_ids"] = list(players_data.keys())
+    if "score" not in session:
         session["score"] = 0
         session["guesses"] = 0
-
+        
+    # Select a random player ID from the list of available IDs stored in the session
+    random_player_id = random.choice(session["player_ids"])
+    
+    # Retrieve the player object using the selected ID
+    random_player = players_data[random_player_id]
+    
+    # Update the current_player_id stored in the session
+    session["current_player_id"] = random_player_id
+    
     return render_template(
         "index.html",
         player={
@@ -84,12 +82,12 @@ def submit():
         session["score"] += 1
         message = "Correct!"
         # Remove the guessed player from the players dictionary
-        players_data.pop(player_id)
+        session["player_ids"].remove(player_id)
         session["guesses"] += 1
         guesses = 20 - session["guesses"]
     else:
         message = "Incorrect!"
-        players_data.pop(player_id)
+        session["player_ids"].remove(player_id)
         session["guesses"] += 1
         guesses = 20 - session["guesses"]
     if session["guesses"] >= 20:
