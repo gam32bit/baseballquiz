@@ -36,6 +36,15 @@ img {
   max-height: 500px;
 }
 
+a {
+  background-color: #1138ad;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 2rem;
+  cursor: pointer;
+  border-radius: 5px;
+}
 
 button {
   background-color: #1138ad;

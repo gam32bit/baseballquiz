@@ -83,7 +83,7 @@ def submit():
         session["guesses"] += 1
         guesses = 20 - session.get("guesses")
     else:
-        message = "Incorrect!"
+        message = "Guess Again!"
         session["player_ids"].remove(player_id)
         session["guesses"] += 1
         guesses = 20 - session.get("guesses")
