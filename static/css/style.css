@@ -5,14 +5,14 @@ body {
 }
 
 div {
-  width: 80%;
+  width: 100%;
   margin: 0 auto;
   text-align: center;
 }
 
 h1 {
-  font-size: 2rem;
-  margin-top: 2rem;
+  font-size: 4rem;
+  margin-top: 4rem;
 }
 
 label {
@@ -22,7 +22,7 @@ label {
 img {
   max-width: 100%;
   height: auto;
-  max-height: 250px;
+  max-height: 500px;
 }
 
 button {
@@ -30,7 +30,7 @@ button {
   color: white;
   border: none;
   padding: 12px 20px;
-  font-size: 1rem;
+  font-size: 3rem;
   cursor: pointer;
   border-radius: 5px;
 }
