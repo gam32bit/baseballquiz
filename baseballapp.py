@@ -7,7 +7,7 @@ import secrets
 import os
 
 app = Flask(__name__)
-app.secret_key = secrets.token_hex(16)
+app.secret_key = SECRET_KEY
 
 # Define the JSON schema for the players data
 players_schema = {
