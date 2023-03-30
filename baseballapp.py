@@ -3,8 +3,10 @@ import random
 from Levenshtein import distance
 import json
 import jsonschema
+import secrets
 
 app = Flask(__name__)
+app.secret_key = secrets.token_hex(16)
 
 # Define the JSON schema for the players data
 players_schema = {
