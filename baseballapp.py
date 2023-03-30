@@ -75,9 +75,6 @@ def index():
 
 @app.route("/submit", methods=["POST"])
 def submit():
-    if "current_player_id" not in session:
-        # Handle the case when current_player_id is not present in the session
-        return redirect(url_for("index"))
     player_id = session["current_player_id"]
     player = players_data[player_id]
     guessed_name = request.form["name"].strip().lower()
