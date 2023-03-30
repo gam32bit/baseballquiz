@@ -24,6 +24,12 @@ label {
   font-size: 2rem;
 }
 
+input[type="text"] {
+  font-size: 2rem;
+  padding: 0.5rem;
+  width: 15rem;
+}
+
 img {
   max-width: auto;
   height: 500px;
